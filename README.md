@@ -12,7 +12,7 @@ derecha, y chat en vivo con imagenes por WebSockets.
 |---|---|
 | Inicio de sesion | `mobile/src/app/pages/login`, `backend/src/routes/auth.routes.js` |
 | Registro completo con imagen de perfil | `mobile/src/app/pages/register` (multipart con la foto) |
-| CRUD de perfil | `mobile/src/app/pages/profile` — leer, editar datos, cambiar foto, cambiar contrasena y eliminar cuenta |
+| CRUD de perfil | `mobile/src/app/pages/profile` — leer, editar datos, cambiar foto, cambiar contraseña y eliminar cuenta |
 | Aceptar/rechazar deslizando izquierda o derecha | `mobile/src/app/pages/discover` (gesto con pointer events) |
 | Chat con WebSockets en vivo | `backend/src/realtime.js`, `mobile/src/app/core/socket.service.ts` |
 | Persistencia de mensajes y chats | Tablas `matches` y `messages` en `backend/src/db.js` |
@@ -20,7 +20,8 @@ derecha, y chat en vivo con imagenes por WebSockets.
 
 Extras: sello visual "AMIGOS / PASO" al arrastrar, deshacer el ultimo descarte, indicador de
 "escribiendo...", confirmacion de lectura (doble check), estado en linea, contador de mensajes
-sin leer, aviso emergente al conseguir una nueva amistad e historial paginado.
+sin leer, aviso emergente al conseguir una nueva amistad, historial paginado y selector de
+intereses por categorias predefinidas con buscador (`mobile/src/app/shared/interests-picker`).
 
 ## Como ejecutarlo
 
@@ -31,7 +32,7 @@ Se necesita **Node.js 22.5 o superior** (el backend usa el modulo `node:sqlite` 
 ```bash
 cd backend
 npm install
-npm run seed     # opcional: crea 8 perfiles de prueba (contrasena 123456)
+npm run seed     # opcional: crea 8 perfiles de prueba (contraseña 123456)
 npm start        # queda escuchando en http://localhost:3000
 ```
 
@@ -45,7 +46,7 @@ npm install
 npm start        # http://localhost:8100
 ```
 
-Para entrar rapido: **ana@foroamigos.com / 123456** (o el boton "Entrar con la cuenta demo").
+Para entrar rapido tras correr `npm run seed`: **ana@foroamigos.com / 123456**.
 
 Para probar el chat en vivo abre dos navegadores distintos (uno en ventana normal y otro en
 incognito) e inicia sesion con dos cuentas diferentes; por ejemplo `ana@foroamigos.com` y
@@ -100,7 +101,7 @@ mobile/src/app/
 | GET | `/api/auth/me` | Revalidar la sesion guardada |
 | GET/PUT/DELETE | `/api/users/me` | CRUD del perfil |
 | PUT | `/api/users/me/photo` | Cambiar la foto |
-| PUT | `/api/users/me/password` | Cambiar la contrasena |
+| PUT | `/api/users/me/password` | Cambiar la contraseña |
 | GET | `/api/discover` | Perfiles pendientes por decidir |
 | POST | `/api/swipes` | Aceptar (`like`) o rechazar (`pass`) |
 | DELETE | `/api/swipes/:id` | Deshacer el ultimo descarte |

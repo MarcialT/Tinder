@@ -101,6 +101,13 @@ ion-content {
   border-radius: 12px;
 }
 
+.field-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9ca3af;
+  margin: 4px 0 -2px 2px;
+}
+
 ion-button.primary {
   --background: linear-gradient(135deg, #ff5f6d, #ff2d6f);
   --border-radius: 12px;

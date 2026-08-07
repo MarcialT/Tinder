@@ -10,12 +10,8 @@ socialRouter.use(requireAuth);
 socialRouter.get('/discover', (req, res) => {
   const limit = Math.min(Number(req.query.limit) || 20, 50);
   const me = req.user;
-  let candidates = queries.candidates.all(me.id, me.id, limit);
-
-  // Filtro de preferencia: 'todos' no descarta a nadie
-  if (me.interestedIn && me.interestedIn !== 'todos') {
-    candidates = candidates.filter((c) => !c.gender || c.gender === me.interestedIn);
-  }
+  const pref = me.interestedIn || 'todos';
+  const candidates = queries.candidates.all(me.id, me.id, pref, pref, limit);
 
   res.json({ candidates: candidates.map(withAge) });
 });
@@ -27,7 +23,7 @@ socialRouter.post('/swipes', (req, res) => {
   const action = req.body?.action === 'pass' ? 'pass' : 'like';
 
   if (!targetId || targetId === me.id) return res.status(400).json({ error: 'Perfil invalido' });
-  const target = queries.userById.get(targetId);
+  const target = queries.publicUserById.get(targetId);
   if (!target) return res.status(404).json({ error: 'Ese perfil ya no existe' });
 
   queries.insertSwipe.run(me.id, targetId, action);
@@ -42,7 +38,7 @@ socialRouter.post('/swipes', (req, res) => {
   const match = queries.matchByPair.get(a, b);
 
   const payloadForMe = { matchId: match.id, user: withAge(target), matchedAt: match.created_at };
-  const payloadForThem = { matchId: match.id, user: withAge(me), matchedAt: match.created_at };
+  const payloadForThem = { matchId: match.id, user: withAge(toPublic(me)), matchedAt: match.created_at };
   emitToUser(targetId, 'match:new', payloadForThem);
   emitToUser(me.id, 'match:new', payloadForMe);
 
@@ -73,6 +69,12 @@ socialRouter.delete('/matches/:id', (req, res) => {
   emitToUser(otherId, 'match:removed', { matchId: match.id });
   res.json({ ok: true });
 });
+
+/** Quita el correo antes de mostrarle este perfil a otro usuario. */
+function toPublic(user) {
+  const { email, ...rest } = user;
+  return rest;
+}
 
 /** Anade la edad calculada a partir de la fecha de nacimiento. */
 function withAge(user) {

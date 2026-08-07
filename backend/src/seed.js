@@ -1,5 +1,5 @@
 // Carga perfiles de prueba para poder deslizar tarjetas desde el primer arranque.
-// Uso:  npm run seed        (todas las cuentas usan la contrasena 123456)
+// Uso:  npm run seed        (todas las cuentas usan la contraseña 123456)
 import bcrypt from 'bcryptjs';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -58,5 +58,5 @@ for (const p of PEOPLE) {
 
 const total = db.prepare('SELECT COUNT(*) AS n FROM users').get().n;
 console.log(`Perfiles de prueba creados: ${created} (total en la base: ${total})`);
-console.log(`Puedes entrar con cualquiera de estos correos y la contrasena "${PASSWORD}":`);
+console.log(`Puedes entrar con cualquiera de estos correos y la contraseña "${PASSWORD}":`);
 for (const p of PEOPLE) console.log(`  - ${p.name.split(' ')[0].toLowerCase()}@foroamigos.com`);

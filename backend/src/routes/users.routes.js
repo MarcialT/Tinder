@@ -47,15 +47,15 @@ usersRouter.put('/me/photo', upload.single('photo'), async (req, res) => {
   res.json({ user: queries.userById.get(req.user.id) });
 });
 
-// UPDATE (contrasena)
+// UPDATE (contraseña)
 usersRouter.put('/me/password', (req, res) => {
   const { currentPassword, newPassword } = req.body;
   if (!newPassword || String(newPassword).length < 6) {
-    return res.status(400).json({ error: 'La nueva contrasena debe tener al menos 6 caracteres' });
+    return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 6 caracteres' });
   }
   const row = queries.userByEmail.get(req.user.email);
   if (!bcrypt.compareSync(String(currentPassword || ''), row.password_hash)) {
-    return res.status(401).json({ error: 'La contrasena actual no es correcta' });
+    return res.status(401).json({ error: 'La contraseña actual no es correcta' });
   }
   queries.updatePassword.run(bcrypt.hashSync(String(newPassword), 10), req.user.id);
   res.json({ ok: true });
@@ -70,7 +70,7 @@ usersRouter.delete('/me', async (req, res) => {
 
 // READ de otro perfil
 usersRouter.get('/:id', (req, res) => {
-  const user = queries.userById.get(Number(req.params.id));
+  const user = queries.publicUserById.get(Number(req.params.id));
   if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
   res.json({ user });
 });

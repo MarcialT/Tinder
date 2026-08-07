@@ -60,8 +60,7 @@ export function initRealtime(httpServer) {
       const info = queries.insertMessage.run(matchId, user.id, type, content);
       const message = queries.messageById.get(Number(info.lastInsertRowid));
 
-      io.to(matchRoom(matchId)).emit('chat:message', message);
-      io.to(userRoom(otherId)).emit('chat:message', message); // notifica aunque no tenga el chat abierto
+      emitChatMessage(matchId, otherId, message);
       ack?.({ ok: true, message });
     });
 
@@ -95,8 +94,13 @@ export function emitToUser(userId, event, payload) {
   io?.to(userRoom(userId)).emit(event, payload);
 }
 
-export function emitToMatch(matchId, event, payload) {
-  io?.to(matchRoom(matchId)).emit(event, payload);
+/**
+ * Emite un mensaje a la sala del match y a la sala personal del destinatario en una
+ * sola llamada: si su socket esta en ambas (chat abierto), Socket.IO deduplica y solo
+ * le llega una vez.
+ */
+export function emitChatMessage(matchId, otherUserId, message) {
+  io?.to(matchRoom(matchId)).to(userRoom(otherUserId)).emit('chat:message', message);
 }
 
 export function isOnline(userId) {

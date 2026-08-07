@@ -6,6 +6,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AuthService } from '../../core/auth.service';
 import { readError } from '../login/login.page';
+import { InterestsPickerComponent } from '../../shared/interests-picker/interests-picker.component';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +14,7 @@ import { readError } from '../login/login.page';
   styleUrls: ['./register.page.scss', '../shared/auth-shell.scss'],
   imports: [
     FormsModule, RouterLink, IonContent, IonInput, IonButton, IonIcon, IonSpinner,
-    IonSelect, IonSelectOption, IonTextarea,
+    IonSelect, IonSelectOption, IonTextarea, InterestsPickerComponent,
   ],
 })
 export class RegisterPage {
@@ -29,9 +30,9 @@ export class RegisterPage {
     interestedIn: 'todos',
     city: '',
     bio: '',
-    interests: '',
   };
 
+  interests: string[] = [];
   photo: File | null = null;
   preview = signal<string>('');
   loading = signal(false);
@@ -54,17 +55,17 @@ export class RegisterPage {
     this.error.set('');
 
     if (!this.form.name.trim() || !this.form.email.trim() || !this.form.password) {
-      this.error.set('Nombre, correo y contrasena son obligatorios');
+      this.error.set('Nombre, correo y contraseña son obligatorios');
       return;
     }
     if (this.form.password.length < 6) {
-      this.error.set('La contrasena debe tener al menos 6 caracteres');
+      this.error.set('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
     this.loading.set(true);
     try {
-      await this.auth.register({ ...this.form }, this.photo);
+      await this.auth.register({ ...this.form, interests: this.interests.join(', ') }, this.photo);
       await this.router.navigateByUrl('/tabs/descubrir', { replaceUrl: true });
     } catch (err: unknown) {
       this.error.set(readError(err, 'No pudimos crear tu cuenta'));

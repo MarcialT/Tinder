@@ -22,7 +22,7 @@
         class="field"
         [type]="showPassword() ? 'text' : 'password'"
         autocomplete="current-password"
-        label="Contrasena"
+        label="Contraseña"
         labelPlacement="floating"
         [(ngModel)]="password"
         name="password"
@@ -38,13 +38,6 @@
 
       <ion-button class="primary" expand="block" type="submit" [disabled]="loading()">
         @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Entrar }
-      </ion-button>
-
-      <ion-note class="ion-text-center" style="color: rgba(255,255,255,.6); font-size: 12px">
-        Cuenta de prueba: ana&#64;foroamigos.com / 123456
-      </ion-note>
-      <ion-button fill="clear" size="small" (click)="demo()" style="--color: #ff8fa6">
-        Entrar con la cuenta demo
       </ion-button>
     </form>
 

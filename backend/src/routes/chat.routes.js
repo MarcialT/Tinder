@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { queries, otherParticipant } from '../db.js';
 import { requireAuth } from '../auth.js';
 import { upload, publicUrl } from '../uploads.js';
-import { emitToUser, emitToMatch, isOnline } from '../realtime.js';
+import { emitToUser, emitChatMessage, isOnline } from '../realtime.js';
 
 export const chatRouter = Router();
 chatRouter.use(requireAuth);
@@ -27,7 +27,7 @@ chatRouter.get('/:id/messages', (req, res) => {
   const limit = Math.min(Number(req.query.limit) || 30, 100);
   const messages = queries.messagesOfMatch.all(ctx.match.id, before, limit).reverse();
 
-  const other = queries.userById.get(ctx.otherId);
+  const other = queries.publicUserById.get(ctx.otherId);
   res.json({
     matchId: ctx.match.id,
     other,
@@ -49,8 +49,7 @@ chatRouter.post('/:id/messages', (req, res) => {
   const info = queries.insertMessage.run(ctx.match.id, req.user.id, type, content);
   const message = queries.messageById.get(Number(info.lastInsertRowid));
 
-  emitToMatch(ctx.match.id, 'chat:message', message);
-  emitToUser(ctx.otherId, 'chat:message', message);
+  emitChatMessage(ctx.match.id, ctx.otherId, message);
   res.status(201).json({ message });
 });
 
@@ -63,8 +62,7 @@ chatRouter.post('/:id/images', upload.single('image'), (req, res) => {
   const info = queries.insertMessage.run(ctx.match.id, req.user.id, 'image', publicUrl(req.file));
   const message = queries.messageById.get(Number(info.lastInsertRowid));
 
-  emitToMatch(ctx.match.id, 'chat:message', message);
-  emitToUser(ctx.otherId, 'chat:message', message);
+  emitChatMessage(ctx.match.id, ctx.otherId, message);
   res.status(201).json({ message });
 });
 

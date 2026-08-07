@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
-  IonContent, IonInput, IonButton, IonIcon, IonSpinner, IonNote,
+  IonContent, IonInput, IonButton, IonIcon, IonSpinner,
 } from '@ionic/angular/standalone';
 import { AuthService } from '../../core/auth.service';
 
@@ -10,7 +10,7 @@ import { AuthService } from '../../core/auth.service';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss', '../shared/auth-shell.scss'],
-  imports: [FormsModule, RouterLink, IonContent, IonInput, IonButton, IonIcon, IonSpinner, IonNote],
+  imports: [FormsModule, RouterLink, IonContent, IonInput, IonButton, IonIcon, IonSpinner],
 })
 export class LoginPage {
   private auth = inject(AuthService);
@@ -27,7 +27,7 @@ export class LoginPage {
     this.error.set('');
 
     if (!this.email.trim() || !this.password) {
-      this.error.set('Escribe tu correo y tu contrasena');
+      this.error.set('Escribe tu correo y tu contraseña');
       return;
     }
 
@@ -40,13 +40,6 @@ export class LoginPage {
     } finally {
       this.loading.set(false);
     }
-  }
-
-  /** Atajo para la sustentacion: entra con una cuenta de prueba. */
-  async demo(): Promise<void> {
-    this.email = 'ana@foroamigos.com';
-    this.password = '123456';
-    await this.submit();
   }
 }
 

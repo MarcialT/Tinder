@@ -11,3 +11,6 @@ backend/uploads/*
 .DS_Store
 Thumbs.db
 *.log
+
+# Captura de requisitos del proyecto (no es parte del codigo)
+/Imagen/

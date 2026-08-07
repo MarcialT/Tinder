@@ -40,3 +40,21 @@ ion-textarea.field {
   border-radius: 14px;
   color: #fff;
 }
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 2px 0 -6px 2px;
+}
+
+app-interests-picker {
+  --picker-chip-bg: rgba(255, 255, 255, 0.09);
+  --picker-chip-color: rgba(255, 255, 255, 0.85);
+  --picker-chip-border: rgba(255, 255, 255, 0.18);
+  --picker-chip-selected-bg: linear-gradient(135deg, #ff5f6d, #ff2d6f);
+  --picker-chip-selected-color: #fff;
+  --picker-search-bg: rgba(255, 255, 255, 0.09);
+  --picker-search-color: #fff;
+  --picker-empty-color: rgba(255, 255, 255, 0.55);
+}

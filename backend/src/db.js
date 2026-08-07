@@ -70,12 +70,17 @@ export function pairKey(id1, id2) {
   return id1 < id2 ? [id1, id2] : [id2, id1];
 }
 
-const PUBLIC_FIELDS = `id, name, email, birthdate, gender, interested_in AS interestedIn,
+// Campos propios (incluyen el correo): solo para el dueno de la cuenta.
+const OWN_FIELDS = `id, name, email, birthdate, gender, interested_in AS interestedIn,
+                    bio, city, interests, photo_url AS photoUrl, created_at AS createdAt`;
+// Campos publicos (sin correo): para todo lo que ve otro usuario (candidatos, matches, chat).
+const PUBLIC_FIELDS = `id, name, birthdate, gender, interested_in AS interestedIn,
                        bio, city, interests, photo_url AS photoUrl, created_at AS createdAt`;
 
 export const queries = {
   userByEmail: db.prepare('SELECT * FROM users WHERE email = ?'),
-  userById: db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users WHERE id = ?`),
+  userById: db.prepare(`SELECT ${OWN_FIELDS} FROM users WHERE id = ?`),
+  publicUserById: db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users WHERE id = ?`),
   insertUser: db.prepare(`INSERT INTO users
     (name, email, password_hash, birthdate, gender, interested_in, bio, city, interests, photo_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`),
@@ -90,6 +95,7 @@ export const queries = {
     SELECT ${PUBLIC_FIELDS} FROM users
     WHERE id != ?
       AND id NOT IN (SELECT to_user FROM swipes WHERE from_user = ?)
+      AND (? = 'todos' OR gender IS NULL OR gender = ?)
     ORDER BY created_at DESC
     LIMIT ?`),
 

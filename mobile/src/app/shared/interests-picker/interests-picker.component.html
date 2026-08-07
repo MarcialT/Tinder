@@ -1,0 +1,30 @@
+@if (selected.length > 0) {
+  <div class="chosen">
+    @for (category of selected; track category) {
+      <button type="button" class="chip selected" (click)="toggle(category)">
+        {{ category }}
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    }
+  </div>
+}
+
+<ion-searchbar
+  class="search"
+  placeholder="Buscar un interes..."
+  [debounce]="150"
+  (ionInput)="onSearch($event)"></ion-searchbar>
+
+<div class="options">
+  @for (category of filtered; track category) {
+    <button
+      type="button"
+      class="chip"
+      [class.selected]="isSelected(category)"
+      (click)="toggle(category)">
+      {{ category }}
+    </button>
+  } @empty {
+    <p class="empty">Sin resultados para esa busqueda</p>
+  }
+</div>

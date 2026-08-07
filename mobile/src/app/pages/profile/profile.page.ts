@@ -9,6 +9,7 @@ import { AuthService } from '../../core/auth.service';
 import { SocketService } from '../../core/socket.service';
 import { mediaUrl } from '../../core/api';
 import { readError } from '../login/login.page';
+import { InterestsPickerComponent } from '../../shared/interests-picker/interests-picker.component';
 
 @Component({
   selector: 'app-profile',
@@ -17,6 +18,7 @@ import { readError } from '../login/login.page';
   imports: [
     FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonButton, IonInput,
     IonTextarea, IonSelect, IonSelectOption, IonList, IonItem, IonLabel, IonSpinner,
+    InterestsPickerComponent,
   ],
 })
 export class ProfilePage implements ViewWillEnter {
@@ -31,7 +33,8 @@ export class ProfilePage implements ViewWillEnter {
   readonly user = this.auth.user;
   readonly online = this.socket.connected;
 
-  form = { name: '', birthdate: '', gender: '', interestedIn: 'todos', city: '', bio: '', interests: '' };
+  form = { name: '', birthdate: '', gender: '', interestedIn: 'todos', city: '', bio: '' };
+  interests: string[] = [];
   saving = signal(false);
 
   ionViewWillEnter(): void {
@@ -44,8 +47,8 @@ export class ProfilePage implements ViewWillEnter {
       interestedIn: u.interestedIn ?? 'todos',
       city: u.city ?? '',
       bio: u.bio ?? '',
-      interests: u.interests ?? '',
     };
+    this.interests = (u.interests ?? '').split(',').map((i) => i.trim()).filter(Boolean);
   }
 
   async save(): Promise<void> {
@@ -53,7 +56,7 @@ export class ProfilePage implements ViewWillEnter {
 
     this.saving.set(true);
     try {
-      await this.auth.updateProfile({ ...this.form });
+      await this.auth.updateProfile({ ...this.form, interests: this.interests.join(', ') });
       await this.notify('Perfil actualizado', 'success');
     } catch (err) {
       await this.notify(readError(err, 'No se pudo guardar'), 'danger');
@@ -85,10 +88,10 @@ export class ProfilePage implements ViewWillEnter {
 
   async changePassword(): Promise<void> {
     const alert = await this.alerts.create({
-      header: 'Cambiar contrasena',
+      header: 'Cambiar contraseña',
       inputs: [
-        { name: 'current', type: 'password', placeholder: 'Contrasena actual' },
-        { name: 'next', type: 'password', placeholder: 'Nueva contrasena (min. 6)' },
+        { name: 'current', type: 'password', placeholder: 'Contraseña actual' },
+        { name: 'next', type: 'password', placeholder: 'Nueva contraseña (min. 6)' },
       ],
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
@@ -97,7 +100,7 @@ export class ProfilePage implements ViewWillEnter {
           handler: async (data: { current: string; next: string }) => {
             try {
               await this.auth.changePassword(data.current, data.next);
-              await this.notify('Contrasena actualizada', 'success');
+              await this.notify('Contraseña actualizada', 'success');
             } catch (err) {
               await this.notify(readError(err, 'No se pudo cambiar'), 'danger');
             }

@@ -25,7 +25,7 @@
       <ion-input class="field" type="email" inputmode="email" label="Correo" labelPlacement="floating"
                  [(ngModel)]="form.email" name="email" placeholder="ana@ejemplo.com"></ion-input>
 
-      <ion-input class="field" type="password" label="Contrasena" labelPlacement="floating"
+      <ion-input class="field" type="password" label="Contraseña" labelPlacement="floating"
                  [(ngModel)]="form.password" name="password" placeholder="Minimo 6 caracteres"></ion-input>
 
       <ion-input class="field" type="date" label="Fecha de nacimiento" labelPlacement="floating"
@@ -48,8 +48,8 @@
       <ion-input class="field" label="Ciudad" labelPlacement="floating"
                  [(ngModel)]="form.city" name="city" placeholder="Medellin"></ion-input>
 
-      <ion-input class="field" label="Intereses (separados por coma)" labelPlacement="floating"
-                 [(ngModel)]="form.interests" name="interests" placeholder="cafe, cine, senderismo"></ion-input>
+      <div class="field-label">Intereses</div>
+      <app-interests-picker [selected]="interests" (selectedChange)="interests = $event"></app-interests-picker>
 
       <ion-textarea class="field" label="Sobre mi" labelPlacement="floating" [autoGrow]="true" rows="3"
                     [(ngModel)]="form.bio" name="bio" placeholder="Cuentales algo de ti"></ion-textarea>

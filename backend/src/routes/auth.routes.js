@@ -11,10 +11,10 @@ authRouter.post('/register', upload.single('photo'), (req, res) => {
   const { name, email, password, birthdate, gender, interestedIn, bio, city, interests } = req.body;
 
   if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Nombre, correo y contrasena son obligatorios' });
+    return res.status(400).json({ error: 'Nombre, correo y contraseña son obligatorios' });
   }
   if (String(password).length < 6) {
-    return res.status(400).json({ error: 'La contrasena debe tener al menos 6 caracteres' });
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
   }
 
   const normalizedEmail = String(email).trim().toLowerCase();
@@ -44,7 +44,7 @@ authRouter.post('/register', upload.single('photo'), (req, res) => {
 authRouter.post('/login', (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ error: 'Correo y contrasena son obligatorios' });
+    return res.status(400).json({ error: 'Correo y contraseña son obligatorios' });
   }
 
   const row = queries.userByEmail.get(String(email).trim().toLowerCase());
