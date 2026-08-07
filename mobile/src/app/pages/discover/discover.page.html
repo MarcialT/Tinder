@@ -1,0 +1,101 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>
+      <span class="logo-text">Foro Amigos</span>
+    </ion-title>
+    <ion-button slot="end" fill="clear" (click)="load()" aria-label="Recargar perfiles">
+      <ion-icon slot="icon-only" name="refresh"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="deck-content" [scrollY]="false">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($any($event))">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="state"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (cards().length === 0) {
+    <div class="state empty">
+      <ion-icon name="sparkles"></ion-icon>
+      <h3>Ya viste a todos por ahora</h3>
+      <p>Vuelve mas tarde o invita a un compañero a registrarse, {{ myName() }}.</p>
+      <ion-button fill="outline" (click)="load()">Buscar de nuevo</ion-button>
+    </div>
+  } @else {
+    <div class="deck-wrap">
+    <div class="deck">
+      @for (user of visible(); track user.id; let i = $index) {
+        <div
+          class="card"
+          [class.top]="i === 0"
+          [class.dragging]="i === 0 && dragging()"
+          [style.transform]="cardTransform(i)"
+          [style.zIndex]="10 - i"
+          (pointerdown)="i === 0 && onPointerDown($event)"
+          (pointermove)="i === 0 && onPointerMove($event)"
+          (pointerup)="i === 0 && onPointerUp($event)"
+          (pointercancel)="i === 0 && onPointerUp($event)">
+
+          @if (user.photoUrl) {
+            <img class="photo" [src]="mediaUrl(user.photoUrl)" [alt]="user.name" draggable="false" />
+          } @else {
+            <div class="photo placeholder">{{ initials(user.name) }}</div>
+          }
+
+          @if (i === 0) {
+            <div class="stamp like" [style.opacity]="intent() > 0 ? intent() : 0">AMIGOS</div>
+            <div class="stamp nope" [style.opacity]="intent() < 0 ? -intent() : 0">PASO</div>
+          }
+
+          <div class="info">
+            <h2>
+              {{ user.name }}
+              @if (user.age) { <span class="age">{{ user.age }}</span> }
+            </h2>
+            @if (user.city) {
+              <p class="city"><ion-icon name="location-outline"></ion-icon> {{ user.city }}</p>
+            }
+            @if (user.bio) { <p class="bio">{{ user.bio }}</p> }
+            <div class="tags">
+              @for (tag of interestList(user); track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="actions">
+      <button class="fab pass" (click)="decide('pass')" aria-label="Rechazar">
+        <ion-icon name="close"></ion-icon>
+      </button>
+      <button class="fab undo" (click)="undo()" [disabled]="!lastPassed()" aria-label="Deshacer">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+      <button class="fab like" (click)="decide('like')" aria-label="Aceptar">
+        <ion-icon name="heart"></ion-icon>
+      </button>
+    </div>
+
+      <p class="hint">Desliza a la derecha para aceptar, a la izquierda para rechazar</p>
+    </div>
+  }
+
+  <!-- Celebracion cuando el "me gusta" es mutuo -->
+  @if (matchedWith(); as m) {
+    <div class="match-overlay">
+      <div class="match-box">
+        <ion-icon name="heart-circle"></ion-icon>
+        <h2>Nueva amistad!</h2>
+        <p>A {{ m.user.name }} tambien le interesa conocerte.</p>
+        <ion-button expand="block" class="match-cta" (click)="openChat()">Enviar mensaje</ion-button>
+        <ion-button expand="block" fill="clear" class="match-later" (click)="matchedWith.set(null)">
+          Seguir deslizando
+        </ion-button>
+      </div>
+    </div>
+  }
+</ion-content>

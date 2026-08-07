@@ -1,0 +1,13 @@
+node_modules/
+www/
+dist/
+.angular/
+
+# Datos generados por el backend en tiempo de ejecucion
+backend/data/
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+.DS_Store
+Thumbs.db
+*.log

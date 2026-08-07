@@ -1,0 +1,57 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Amigos</ion-title>
+    <ion-button slot="end" fill="clear" (click)="load()" aria-label="Recargar">
+      <ion-icon slot="icon-only" name="refresh"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($any($event))">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="state"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (matches().length === 0) {
+    <div class="state empty">
+      <ion-icon name="people-outline"></ion-icon>
+      <h3>Todavia no tienes amigos</h3>
+      <p>Ve a Descubrir y desliza a la derecha. Cuando el interes sea mutuo apareceran aqui.</p>
+    </div>
+  } @else {
+    <ion-list lines="none">
+      @for (m of matches(); track m.matchId) {
+        <ion-item-sliding>
+          <ion-item button detail="false" (click)="open(m)">
+            <ion-avatar slot="start" class="avatar">
+              @if (m.photoUrl) {
+                <img [src]="mediaUrl(m.photoUrl)" [alt]="m.name" />
+              } @else {
+                <div class="initials">{{ initials(m.name) }}</div>
+              }
+              @if (m.online) { <span class="dot"></span> }
+            </ion-avatar>
+
+            <ion-label>
+              <h2>{{ m.name }}</h2>
+              <p [class.unread-text]="m.unread > 0">{{ preview(m) }}</p>
+            </ion-label>
+
+            <div class="meta" slot="end">
+              <span class="time">{{ when(m.lastMessageAt ?? m.matchedAt) }}</span>
+              @if (m.unread > 0) { <ion-badge color="danger">{{ m.unread }}</ion-badge> }
+            </div>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="confirmRemove(m)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      }
+    </ion-list>
+  }
+</ion-content>

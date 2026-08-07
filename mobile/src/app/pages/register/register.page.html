@@ -1,0 +1,70 @@
+<ion-content class="auth-bg" [fullscreen]="true">
+  <div class="auth-wrap">
+    <div class="brand">
+      <h1>Crea tu perfil</h1>
+      <p>Asi te veran los demas antes de deslizar</p>
+    </div>
+
+    <form class="card" (ngSubmit)="submit()">
+      <!-- Foto de perfil -->
+      <div class="photo-picker">
+        <label class="avatar" [class.filled]="preview()">
+          @if (preview()) {
+            <img [src]="preview()" alt="Vista previa de la foto" />
+          } @else {
+            <ion-icon name="camera-outline"></ion-icon>
+          }
+          <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+        </label>
+        <span>Toca para elegir tu foto</span>
+      </div>
+
+      <ion-input class="field" label="Nombre completo" labelPlacement="floating"
+                 [(ngModel)]="form.name" name="name" placeholder="Ana Restrepo"></ion-input>
+
+      <ion-input class="field" type="email" inputmode="email" label="Correo" labelPlacement="floating"
+                 [(ngModel)]="form.email" name="email" placeholder="ana@ejemplo.com"></ion-input>
+
+      <ion-input class="field" type="password" label="Contrasena" labelPlacement="floating"
+                 [(ngModel)]="form.password" name="password" placeholder="Minimo 6 caracteres"></ion-input>
+
+      <ion-input class="field" type="date" label="Fecha de nacimiento" labelPlacement="floating"
+                 [(ngModel)]="form.birthdate" name="birthdate"></ion-input>
+
+      <ion-select class="field" label="Me identifico como" labelPlacement="floating"
+                  interface="action-sheet" [(ngModel)]="form.gender" name="gender">
+        <ion-select-option value="mujer">Mujer</ion-select-option>
+        <ion-select-option value="hombre">Hombre</ion-select-option>
+        <ion-select-option value="otro">Otro</ion-select-option>
+      </ion-select>
+
+      <ion-select class="field" label="Quiero conocer" labelPlacement="floating"
+                  interface="action-sheet" [(ngModel)]="form.interestedIn" name="interestedIn">
+        <ion-select-option value="todos">A todos</ion-select-option>
+        <ion-select-option value="mujer">Mujeres</ion-select-option>
+        <ion-select-option value="hombre">Hombres</ion-select-option>
+      </ion-select>
+
+      <ion-input class="field" label="Ciudad" labelPlacement="floating"
+                 [(ngModel)]="form.city" name="city" placeholder="Medellin"></ion-input>
+
+      <ion-input class="field" label="Intereses (separados por coma)" labelPlacement="floating"
+                 [(ngModel)]="form.interests" name="interests" placeholder="cafe, cine, senderismo"></ion-input>
+
+      <ion-textarea class="field" label="Sobre mi" labelPlacement="floating" [autoGrow]="true" rows="3"
+                    [(ngModel)]="form.bio" name="bio" placeholder="Cuentales algo de ti"></ion-textarea>
+
+      @if (error()) {
+        <div class="error">{{ error() }}</div>
+      }
+
+      <ion-button class="primary" expand="block" type="submit" [disabled]="loading()">
+        @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Crear cuenta }
+      </ion-button>
+    </form>
+
+    <div class="foot">
+      Ya tienes cuenta? <a routerLink="/login">Inicia sesion</a>
+    </div>
+  </div>
+</ion-content>

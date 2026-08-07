@@ -1,0 +1,89 @@
+// Estilos compartidos por las pantallas de bienvenida (login y registro)
+.auth-bg {
+  --background: linear-gradient(160deg, #1b1033 0%, #3b1552 45%, #7b1e4b 100%);
+}
+
+.auth-wrap {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 24px calc(24px + var(--ion-safe-area-bottom, 0px));
+  gap: 22px;
+}
+
+.brand {
+  text-align: center;
+  color: #fff;
+
+  .logo {
+    width: 74px;
+    height: 74px;
+    margin: 0 auto 14px;
+    border-radius: 24px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #ff5f6d, #ff2d6f);
+    box-shadow: 0 14px 34px rgba(255, 45, 111, 0.42);
+
+    ion-icon { font-size: 40px; color: #fff; }
+  }
+
+  h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.5px; }
+  p  { margin: 6px 0 0; opacity: 0.72; font-size: 14px; }
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  border-radius: 22px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+ion-input.field {
+  --background: rgba(255, 255, 255, 0.09);
+  --color: #fff;
+  --placeholder-color: rgba(255, 255, 255, 0.55);
+  --placeholder-opacity: 1;
+  --padding-start: 14px;
+  --padding-end: 10px;
+  --border-radius: 14px;
+  border-radius: 14px;
+  color: #fff;
+}
+
+// Boton "mostrar contrasena" dentro del campo
+ion-input.field ion-button {
+  --color: rgba(255, 255, 255, 0.55);
+  --padding-start: 6px;
+  --padding-end: 6px;
+  height: 34px;
+  margin: 0;
+}
+
+ion-button.primary {
+  --background: linear-gradient(135deg, #ff5f6d, #ff2d6f);
+  --border-radius: 14px;
+  --box-shadow: 0 10px 24px rgba(255, 45, 111, 0.35);
+  height: 48px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.error {
+  color: #ffb4b4;
+  font-size: 13px;
+  text-align: center;
+}
+
+.foot {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+
+  a { color: #ff8fa6; font-weight: 700; text-decoration: none; }
+}

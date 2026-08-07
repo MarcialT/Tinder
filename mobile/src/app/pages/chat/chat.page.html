@@ -1,0 +1,110 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/amigos" text=""></ion-back-button>
+    </ion-buttons>
+
+    @if (other(); as u) {
+      <ion-avatar class="head-avatar" slot="start">
+        @if (u.photoUrl) {
+          <img [src]="mediaUrl(u.photoUrl)" [alt]="u.name" />
+        } @else {
+          <div class="initials">{{ initials(u.name) }}</div>
+        }
+      </ion-avatar>
+      <ion-title>
+        <div class="head">
+          <span class="name">{{ u.name }}</span>
+          <span class="status" [class.on]="otherOnline() || otherTyping()">
+            @if (otherTyping()) { escribiendo... }
+            @else if (otherOnline()) { en linea } @else { desconectado }
+          </span>
+        </div>
+      </ion-title>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollEvents]="true" (ionScroll)="onScroll($any($event))" class="chat-content">
+  @if (loading()) {
+    <div class="state"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else {
+    @if (loadingMore()) {
+      <div class="loading-more"><ion-spinner name="dots"></ion-spinner></div>
+    }
+
+    @if (messages().length === 0) {
+      <div class="state empty">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <p>Son amigos desde hoy. Escribe el primer mensaje!</p>
+      </div>
+    }
+
+    <div class="thread">
+      @for (msg of messages(); track msg.id; let i = $index) {
+        @if (daySeparator(i); as day) {
+          <div class="day">{{ day }}</div>
+        }
+
+        <div class="row" [class.mine]="msg.senderId === myId">
+          <div class="bubble" [class.image]="msg.type === 'image'">
+            @if (msg.type === 'image') {
+              <img [src]="mediaUrl(msg.content)" alt="Imagen enviada"
+                   (click)="lightbox.set(mediaUrl(msg.content))" />
+            } @else {
+              <span class="text">{{ msg.content }}</span>
+            }
+            <span class="stamp">
+              {{ time(msg.createdAt) }}
+              @if (msg.senderId === myId && msg.readAt) {
+                <ion-icon name="checkmark-done"></ion-icon>
+              }
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (otherTyping()) {
+        <div class="row">
+          <div class="bubble typing"><span></span><span></span><span></span></div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (lightbox()) {
+    <div class="lightbox" (click)="lightbox.set('')">
+      <img [src]="lightbox()" alt="Imagen ampliada" />
+    </div>
+  }
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="composer">
+    <input #fileInput type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+
+    <ion-button fill="clear" class="attach" (click)="pickImage()" [disabled]="sending()"
+                aria-label="Enviar imagen">
+      <ion-icon slot="icon-only" name="image-outline"></ion-icon>
+    </ion-button>
+
+    <ion-textarea
+      class="input"
+      placeholder="Escribe un mensaje"
+      [autoGrow]="true"
+      rows="1"
+      maxlength="1000"
+      [(ngModel)]="draft"
+      (ionInput)="onTyping()"
+      (keydown)="onKeydown($any($event))"></ion-textarea>
+
+    <ion-button class="send" (click)="send()" [disabled]="sending() || !draft.trim()"
+                aria-label="Enviar">
+      @if (sending()) {
+        <ion-spinner name="dots"></ion-spinner>
+      } @else {
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      }
+    </ion-button>
+  </div>
+</ion-footer>

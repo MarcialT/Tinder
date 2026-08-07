@@ -1,0 +1,55 @@
+<ion-content class="auth-bg" [fullscreen]="true">
+  <div class="auth-wrap">
+    <div class="brand">
+      <div class="logo"><ion-icon name="flame-outline"></ion-icon></div>
+      <h1>Foro Amigos</h1>
+      <p>Desliza, conecta y conversa en tiempo real</p>
+    </div>
+
+    <form class="card" (ngSubmit)="submit()">
+      <ion-input
+        class="field"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        label="Correo"
+        labelPlacement="floating"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="tucorreo@ejemplo.com"></ion-input>
+
+      <ion-input
+        class="field"
+        [type]="showPassword() ? 'text' : 'password'"
+        autocomplete="current-password"
+        label="Contrasena"
+        labelPlacement="floating"
+        [(ngModel)]="password"
+        name="password"
+        placeholder="••••••">
+        <ion-button fill="clear" slot="end" (click)="showPassword.set(!showPassword())">
+          <ion-icon slot="icon-only" [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      </ion-input>
+
+      @if (error()) {
+        <div class="error">{{ error() }}</div>
+      }
+
+      <ion-button class="primary" expand="block" type="submit" [disabled]="loading()">
+        @if (loading()) { <ion-spinner name="dots"></ion-spinner> } @else { Entrar }
+      </ion-button>
+
+      <ion-note class="ion-text-center" style="color: rgba(255,255,255,.6); font-size: 12px">
+        Cuenta de prueba: ana&#64;foroamigos.com / 123456
+      </ion-note>
+      <ion-button fill="clear" size="small" (click)="demo()" style="--color: #ff8fa6">
+        Entrar con la cuenta demo
+      </ion-button>
+    </form>
+
+    <div class="foot">
+      No tienes cuenta? <a routerLink="/registro">Registrate</a>
+    </div>
+  </div>
+</ion-content>
