@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { queries, UPLOADS_DIR } from '../db.js';
 import { requireAuth } from '../auth.js';
 import { upload, publicUrl } from '../uploads.js';
+import { validateName, validatePassword } from '../validation.js';
 
 export const usersRouter = Router();
 usersRouter.use(requireAuth);
@@ -26,13 +27,19 @@ usersRouter.get('/me', (req, res) => res.json({ user: req.user }));
 usersRouter.put('/me', (req, res) => {
   const b = req.body;
   const current = req.user;
+
+  if (b.name !== undefined) {
+    const nameError = validateName(b.name);
+    if (nameError) return res.status(400).json({ error: nameError });
+  }
+
   queries.updateUser.run(
     (b.name ?? current.name).trim(),
     b.birthdate ?? current.birthdate,
     b.gender ?? current.gender,
     b.interestedIn ?? current.interestedIn,
-    b.bio ?? current.bio,
-    b.city ?? current.city,
+    b.bio !== undefined ? String(b.bio).trim() : current.bio,
+    b.city !== undefined ? String(b.city).trim() : current.city,
     b.interests ?? current.interests,
     current.id,
   );
@@ -50,14 +57,19 @@ usersRouter.put('/me/photo', upload.single('photo'), async (req, res) => {
 // UPDATE (contraseña)
 usersRouter.put('/me/password', (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  if (!newPassword || String(newPassword).length < 6) {
-    return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 6 caracteres' });
+  if (typeof currentPassword !== 'string' || !currentPassword) {
+    return res.status(400).json({ error: 'Debes ingresar tu contraseña actual para cambiarla' });
   }
   const row = queries.userByEmail.get(req.user.email);
-  if (!bcrypt.compareSync(String(currentPassword || ''), row.password_hash)) {
+  if (!bcrypt.compareSync(currentPassword, row.password_hash)) {
     return res.status(401).json({ error: 'La contraseña actual no es correcta' });
   }
-  queries.updatePassword.run(bcrypt.hashSync(String(newPassword), 10), req.user.id);
+  const passwordError = validatePassword(newPassword);
+  if (passwordError) return res.status(400).json({ error: passwordError });
+  if (newPassword === currentPassword) {
+    return res.status(400).json({ error: 'La nueva contraseña debe ser distinta a la actual' });
+  }
+  queries.updatePassword.run(bcrypt.hashSync(newPassword, 10), req.user.id);
   res.json({ ok: true });
 });
 

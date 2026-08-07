@@ -32,6 +32,10 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
+/* Las paginas de esta app tienen colores fijos (login/registro oscuros, el resto claro):
+   no estan preparadas para adaptarse al modo oscuro del sistema. Si se activa
+   dark.system.css, Ionic invierte el color de texto por defecto y queda texto claro
+   sobre fondos claros (ilegible). Se deja sin activar ningun modo oscuro automatico. */
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */

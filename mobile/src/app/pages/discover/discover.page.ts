@@ -8,6 +8,7 @@ import { SocialService } from '../../core/social.service';
 import { AuthService } from '../../core/auth.service';
 import { User } from '../../core/models';
 import { mediaUrl } from '../../core/api';
+import { ExpandableTextComponent } from '../../shared/expandable-text/expandable-text.component';
 
 type Direction = 'like' | 'pass';
 
@@ -20,7 +21,7 @@ const THRESHOLD = 110;
   styleUrls: ['./discover.page.scss'],
   imports: [
     IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonButton, IonSpinner,
-    IonRefresher, IonRefresherContent,
+    IonRefresher, IonRefresherContent, ExpandableTextComponent,
   ],
 })
 export class DiscoverPage implements ViewWillEnter, OnDestroy {

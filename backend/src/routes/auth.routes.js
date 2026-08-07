@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { queries } from '../db.js';
 import { signToken, requireAuth } from '../auth.js';
 import { upload, publicUrl } from '../uploads.js';
+import { validateName, validateEmail, validatePassword } from '../validation.js';
 
 export const authRouter = Router();
 
@@ -10,12 +11,12 @@ export const authRouter = Router();
 authRouter.post('/register', upload.single('photo'), (req, res) => {
   const { name, email, password, birthdate, gender, interestedIn, bio, city, interests } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Nombre, correo y contraseña son obligatorios' });
-  }
-  if (String(password).length < 6) {
-    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
-  }
+  const nameError = validateName(name);
+  if (nameError) return res.status(400).json({ error: nameError });
+  const emailError = validateEmail(email);
+  if (emailError) return res.status(400).json({ error: emailError });
+  const passwordError = validatePassword(password);
+  if (passwordError) return res.status(400).json({ error: passwordError });
 
   const normalizedEmail = String(email).trim().toLowerCase();
   if (queries.userByEmail.get(normalizedEmail)) {
@@ -30,8 +31,8 @@ authRouter.post('/register', upload.single('photo'), (req, res) => {
     birthdate || null,
     gender || null,
     interestedIn || 'todos',
-    bio || '',
-    city || '',
+    String(bio || '').trim(),
+    String(city || '').trim(),
     interests || '',
     publicUrl(req.file),
   );

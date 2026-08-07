@@ -57,7 +57,9 @@
             @if (user.city) {
               <p class="city"><ion-icon name="location-outline"></ion-icon> {{ user.city }}</p>
             }
-            @if (user.bio) { <p class="bio">{{ user.bio }}</p> }
+            @if (user.bio) {
+              <app-expandable-text class="bio" [text]="user.bio" [limit]="110"></app-expandable-text>
+            }
             <div class="tags">
               @for (tag of interestList(user); track tag) {
                 <span class="tag">{{ tag }}</span>
