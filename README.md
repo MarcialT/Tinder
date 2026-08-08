@@ -56,15 +56,27 @@ incognito) e inicia sesion con dos cuentas diferentes; por ejemplo `ana@foroamig
 
 ```bash
 cd mobile
-# apunta environment.ts a la IP de tu maquina, por ejemplo http://192.168.1.15:3000
-npm run build
+# apunta environment.prod.ts a la IP de tu maquina, por ejemplo http://192.168.1.15:3000
 npx cap add android
-npx cap sync
+```
+
+> **Importante:** `npx cap add android` solo copia `server.cleartext` al `capacitor.config.json`
+> interno, pero **no** modifica el `AndroidManifest.xml`. Como el backend de desarrollo va por
+> `http://` (sin TLS), Android 9+ bloquea esas peticiones salvo que agregues manualmente
+> `android:usesCleartextTraffic="true"` al tag `<application>` de
+> `android/app/src/main/AndroidManifest.xml` (justo despues de `android:supportsRtl`). Sin este
+> paso el APK compila bien pero no logra conectarse al backend en un celular real.
+
+```bash
+npm run build
+npx cap sync android
 npx cap open android
 ```
 
-> El celular y el computador deben estar en la misma red WiFi. La configuracion de Capacitor ya
-> permite trafico en claro (`cleartext: true`) porque el backend de desarrollo va por http.
+O usa `mobile/build-apk.cmd` para compilar el `.apk` directo por linea de comandos (requiere JDK 21
+y el Android SDK en `%LOCALAPPDATA%\Android`, igual que en `rotten-tomatos-app`).
+
+> El celular y el computador deben estar en la misma red WiFi.
 
 ## Estructura
 

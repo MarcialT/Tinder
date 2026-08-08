@@ -3,6 +3,9 @@ www/
 dist/
 .angular/
 
+# Proyecto nativo de Android generado por Capacitor (se regenera con `npx cap add android`)
+mobile/android/
+
 # Datos generados por el backend en tiempo de ejecucion
 backend/data/
 backend/uploads/*
